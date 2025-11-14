@@ -1,3 +1,5 @@
 {
-  "extends": ["next/core-web-vitals", "next/typescript"]
+  // Legacy file intentionally left minimal. Primary ESLint configuration
+  // is `eslint.config.mjs` (flat configuration). Keeping this file
+  // empty prevents older parsers from injecting unsupported CLI options.
 }
