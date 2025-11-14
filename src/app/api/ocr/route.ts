@@ -28,18 +28,10 @@ export async function POST(request: NextRequest) {
         },
         {
           role: 'user',
-          content: [
-            {
-              type: 'text',
-              text: prompt
-            },
-            {
-              type: 'image_url',
-              image_url: {
-                url: dataUrl
-              }
-            }
-          ]
+          // The SDK expects `content` to be a string for chat messages.
+          // Combine the prompt and the image data URL into one string so
+          // TypeScript types align with the client's expectations.
+          content: `${prompt}\nImage data: ${dataUrl}`
         }
       ],
       temperature: 0.1,
