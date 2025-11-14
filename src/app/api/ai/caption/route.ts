@@ -28,18 +28,10 @@ export async function POST(request: NextRequest) {
         },
         {
           role: 'user',
-          content: [
-            {
-              type: 'text',
-              text: prompt
-            },
-            {
-              type: 'image_url',
-              image_url: {
-                url: dataUrl
-              }
-            }
-          ]
+          // The AI client expects string content for chat messages. Combine the
+          // prompt and the image data URL into a single string so TypeScript
+          // types match and the Responses/Chat API accepts the payload.
+          content: `${prompt}\nImage data: ${dataUrl}`
         }
       ],
       temperature: 0.7,
