@@ -1,0 +1,51 @@
+name: Lint & Type Check
+
+on:
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'prisma/**'
+      - 'package.json'
+      - 'tsconfig.json'
+      - '.github/workflows/lint-and-test.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - 'prisma/**'
+      - 'package.json'
+      - 'tsconfig.json'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Comment PR on lint errors
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '❌ Linting and type checking failed. Please fix the errors and push again.'
+            })
