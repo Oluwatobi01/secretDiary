@@ -140,7 +140,12 @@ export default function SecretDiaryApp() {
       entry.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
       entry.tags?.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
     
-    const matchesJournal = selectedJournal === 'all' || entry.journal_id === selectedJournal
+    // Support both shapes: `entry.journal` may be a string id or an object with `id`.
+    const matchesJournal =
+      selectedJournal === 'all' ||
+      (typeof (entry as any).journal === 'string'
+        ? (entry as any).journal === selectedJournal
+        : (entry as any).journal?.id === selectedJournal)
     const matchesFavorites = !showFavorites || entry.is_favorite
     
     return matchesSearch && matchesJournal && matchesFavorites
